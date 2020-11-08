@@ -42,3 +42,8 @@
 王泽麟：spring看完，mybatis
 
 余杭：登录模块完善，实现方案,spring,mybatis继续看完
+侯金冰：spring课程16节，模版，react的登录，dashboard;
+
+余杭：
+
+王泽麟：spring没看完,mybatis了解
