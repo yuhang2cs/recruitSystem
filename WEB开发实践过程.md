@@ -42,8 +42,23 @@
 王泽麟：spring看完，mybatis
 
 余杭：登录模块完善，实现方案,spring,mybatis继续看完
+
+
+
 侯金冰：spring课程16节，模版，react的登录，dashboard;
 
 余杭：
 
 王泽麟：spring没看完,mybatis了解
+
+
+
+
+
+### 11.8-11.15
+
+侯金冰：react数据结构，构造数据，根据用户类的定义，写一下详细信息界面，召集令信息显示界面
+
+王泽麟：springboot 网站开发
+
+余杭：完成登录系统，思考数据交互
