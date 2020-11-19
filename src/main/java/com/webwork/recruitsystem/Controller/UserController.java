@@ -81,10 +81,11 @@ public class UserController {
     }
     @RequestMapping("/modify")
     @ResponseBody
-    public Object updateQuery(@RequestBody User user) {
-        user.setRegister_time(new Date());
+    public Object updateQuery(@RequestBody updateReq req) {
+        User user=req.user;
+        user.setModify_time(new Date());
         System.out.println(user);
-        int count = userService.insertQuery(user);
+        int count = userService.updateQuery(user);
         if(count == 1) {
             return "success";
         }else {
@@ -106,6 +107,27 @@ public class UserController {
             resp.isSuccess="fail";
         }
         return resp;
+    }
+}
+
+class updateReq{
+    User user;
+    String token;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
 

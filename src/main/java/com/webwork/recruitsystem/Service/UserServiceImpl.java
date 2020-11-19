@@ -21,6 +21,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public int updateQuery(User user) {
+        return userDao.updateQuery(user);
+    }
+
+    @Override
     public User selectQuery(User user) {
         return userDao.selectQuery(user);
     }

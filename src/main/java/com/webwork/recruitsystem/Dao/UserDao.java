@@ -7,5 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UserDao {
     public User loginQuery(User user);
     public int insertQuery(User user);
+    public int updateQuery(User user);
     public User selectQuery(User uesr);
+
 }
