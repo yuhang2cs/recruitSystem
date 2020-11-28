@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import sun.jvm.hotspot.asm.Register;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -69,6 +68,7 @@ public class UserController {
     @RequestMapping("/register")
     @ResponseBody
     public Object insertQuery(@RequestBody User user) {
+        System.out.println("register!!!");
         user.setRegister_time(new Date());
         System.out.println(user);
         int count = userService.insertQuery(user);
