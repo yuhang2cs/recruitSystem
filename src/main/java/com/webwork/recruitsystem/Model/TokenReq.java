@@ -1,17 +1,11 @@
 package com.webwork.recruitsystem.Model;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class TokenReq {
     private int req_id;
     private int token_id;
-    @NotNull
-    @NotBlank
     private String rec_username;
-    @NotNull
-    @NotBlank
     private String req_username;
     private String req_desc;
     private Date created_time;

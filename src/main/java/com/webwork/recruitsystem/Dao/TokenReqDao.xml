@@ -43,6 +43,12 @@
         where req_id = #{req_id} and req_username = #{req_username} and state = 'waitprocess'
     </update>
 
+    <update id="SetState" parameterType="com.webwork.recruitsystem.Model.TokenReq">
+        update tokenreq
+        set state = #{state}
+        where req_id = #{req_id}
+    </update>
+
     <delete id="DeleteTokenReq" parameterType="com.webwork.recruitsystem.Model.TokenReq">
         delete from tokenreq
         where req_id= #{req_id} and state = 'waitprocess'

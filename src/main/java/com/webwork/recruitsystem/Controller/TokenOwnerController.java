@@ -103,7 +103,7 @@ public class TokenOwnerController {
         }
         return resp;
     }
-    @RequestMapping(value = "/create")
+    @RequestMapping("/create")
     @ResponseBody
     public Object CreateToken(@RequestBody Token token){
         System.out.println("create");
@@ -123,9 +123,11 @@ public class TokenOwnerController {
 
     @RequestMapping("/processReq")
     @ResponseBody
-    public Object GetUnProcessReq(@RequestBody TokenReq tokenReq){
+    public Object GetUnProcessReq(@RequestParam("token_id") int token_id){
         System.out.println("get unprocess request");
 
+        TokenReq tokenReq=new TokenReq();
+        tokenReq.setToken_id(token_id);
         List<TokenReq> tokenReqs = tokenReqService.UnPcsReq(tokenReq);
 
         Response resp = new Response();
@@ -138,14 +140,15 @@ public class TokenOwnerController {
         }
         return resp;
     }
-    /*
+
     @RequestMapping("/discardReq")
     @ResponseBody
-    public Object DiscardReq(RequestBody TokenReq tokenReq){
+    public Object DiscardReq(@RequestBody TokenReq tokenReq){
         System.out.println("discard request");
 
         //直接将
-        boolean ok = tokenReqService.SetState();
+        tokenReq.setState("discarded");
+        boolean ok = tokenReqService.SetState(tokenReq);
 
         Response resp = new Response();
         if (ok == false){
@@ -160,28 +163,38 @@ public class TokenOwnerController {
 
     @RequestMapping("/acceptReq")
     @ResponseBody
-    public Object DiscardReq(RequestBody TokenReq tokenReq){
-        System.out.println("discard request");
-
+    public Object AcceptReq(@RequestBody TokenReq tokenReq){
+        System.out.println("accept request");
         //获取当前令的召集人数  看是否还有位置
-
-        //设置召集令
-        boolean ok = tokenReqService.SetState(tokenReq);
-
-        //更新发布令里面的人数+1
-
         Response resp = new Response();
-        if (ok == false){
-            resp.code=500;
-            resp.message="fail";
-        }else{
+        resp.code=500;
+        resp.message="fail";
+        boolean ok1=false,ok2=false,ok3=false;
+
+        Token queryToken= new Token();
+        queryToken.setToken_id(tokenReq.getToken_id());
+
+        // 1 查询当前的token,查看当前的人数和总人数
+        Token token = tokenOwnerService.QueryOneToken(queryToken);
+        if(token.getCur_recruited_nums()<token.getRecruit_nums())
+            ok1=true;
+        // 2 设置当场请求状态为accepted
+        if(ok1) {
+            tokenReq.setState("accepted");
+            ok2 = tokenReqService.SetState(tokenReq);
+        }
+        // 3更新token里面的人数+1
+        if(ok1&&ok2){
+            token.setCur_recruited_nums(token.getCur_recruited_nums()+1);
+            tokenOwnerService.UpdateToken(token);
+        }
+
+        if (ok1&&ok2&&ok3){
             resp.code=200;
             resp.message="success";
         }
         return resp;
     }
-
-     */
 
 }
 

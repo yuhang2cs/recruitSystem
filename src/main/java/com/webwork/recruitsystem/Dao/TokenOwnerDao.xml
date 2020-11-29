@@ -10,7 +10,7 @@
         <result column="token_type" property="token_type"/>
         <result column="token_name" property="token_name"/>
         <result column="token_desc" property="token_desc"/>
-        <result column="recruit_number" property="recruit_number"/>
+        <result column="recruit_nums" property="recruit_nums"/>
         <result column="cur_recruited_nums" property="cur_recruited_nums"/>
         <result column="recruit_end" property="recruit_end"/>
         <result column="photo" property="photo"/>
@@ -30,7 +30,7 @@
     <update id="UpdateToken" parameterType="com.webwork.recruitsystem.Model.Token">
         update token
         set token_type = #{token_type},token_name = #{token_name},token_desc = #{token_desc},
-        recruit_number=#{recruit_number},recruit_end=#{recruit_end},photo=#{photo}
+        recruit_nums=#{recruit_nums},cur_recruited_nums=#{cur_recruited_nums},recruit_end=#{recruit_end},photo=#{photo}
         modified_time=#{modified_time},state=#{state}
         where token_id = #{token_id}
     </update>

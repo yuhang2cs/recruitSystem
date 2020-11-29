@@ -42,4 +42,7 @@ public class TokenReqServiceImpl implements TokenReqService{
     public boolean DeleteTokenReq(TokenReq tokenReq) {
         return tokenReqDao.DeleteTokenReq(tokenReq);
     }
+
+    @Override
+    public boolean SetState(TokenReq tokenReq) {return tokenReqDao.SetState(tokenReq); }
 }

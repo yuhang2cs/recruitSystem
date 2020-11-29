@@ -7,51 +7,16 @@ import java.util.Date;
 public class Token {
     private int token_id;
     private int user_id;
-    @NotNull
-    @NotBlank
     private String username;
-    @NotNull
     private String token_type;
-    @NotBlank
-    @NotNull
     private String token_name;
     private String token_desc;
-    private int recruit_number;
-    private int cur_recruit;
+    private int recruit_nums;
+    private int cur_recruited_nums;
     private Date recruit_end ;
-
-    @Override
-    public String toString() {
-        return "Token{" +
-                "token_id=" + token_id +
-                ", user_id=" + user_id +
-                ", username='" + username + '\'' +
-                ", token_type='" + token_type + '\'' +
-                ", token_name='" + token_name + '\'' +
-                ", token_desc='" + token_desc + '\'' +
-                ", recruit_number=" + recruit_number +
-                ", cur_recruit=" + cur_recruit +
-                ", recruit_end=" + recruit_end +
-                ", photo='" + photo + '\'' +
-                ", created_time=" + created_time +
-                ", modified_time=" + modified_time +
-                ", state='" + state + '\'' +
-                '}';
-    }
-
-    public int getCur_recruit() {
-        return cur_recruit;
-    }
-
-    public void setCur_recruit(int cur_recruit) {
-        this.cur_recruit = cur_recruit;
-    }
-
     private String photo;
-    @NotNull
     private Date created_time ;
     private Date modified_time ;
-    @NotNull
     private String state;
 
     public int getToken_id() {
@@ -98,14 +63,6 @@ public class Token {
         this.token_desc = token_desc;
     }
 
-    public int getRecruit_number() {
-        return recruit_number;
-    }
-
-    public void setRecruit_number(int recruit_number) {
-        this.recruit_number = recruit_number;
-    }
-
     public Date getRecruit_end() {
         return recruit_end;
     }
@@ -150,4 +107,38 @@ public class Token {
         this.username = username;
     }
 
+    public int getCur_recruited_nums() {
+        return cur_recruited_nums;
+    }
+
+    public void setCur_recruited_nums(int cur_recruited_nums) {
+        this.cur_recruited_nums = cur_recruited_nums;
+    }
+
+    public int getRecruit_nums() {
+        return recruit_nums;
+    }
+
+    public void setRecruit_nums(int recruit_nums) {
+        this.recruit_nums = recruit_nums;
+    }
+
+    @Override
+    public String toString() {
+        return "Token{" +
+                "token_id=" + token_id +
+                ", user_id=" + user_id +
+                ", username='" + username + '\'' +
+                ", token_type='" + token_type + '\'' +
+                ", token_name='" + token_name + '\'' +
+                ", token_desc='" + token_desc + '\'' +
+                ", recruit_number=" + recruit_nums +
+                ", cur_recruited_nums=" + cur_recruited_nums +
+                ", recruit_end=" + recruit_end +
+                ", photo='" + photo + '\'' +
+                ", created_time=" + created_time +
+                ", modified_time=" + modified_time +
+                ", state='" + state + '\'' +
+                '}';
+    }
 }

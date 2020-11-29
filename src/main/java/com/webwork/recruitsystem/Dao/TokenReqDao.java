@@ -14,4 +14,5 @@ public interface TokenReqDao {
     boolean CreateTokenReq(TokenReq tokenReq);
     boolean UpdateTokenReq(TokenReq tokenReq);
     boolean DeleteTokenReq(TokenReq tokenReq);
+    boolean SetState(TokenReq tokenReq);
 }

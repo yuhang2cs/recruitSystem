@@ -46,6 +46,6 @@ create table if not exists `TokenReq`(
     `req_desc`  varchar(100) not null ,
     `created_time` DATE not null,
     `modified_time` DATE default null,
-    `state` enum ('complete','waitprocess','cancel','timeout','discarded','accept') default 'waitprocess'
+    `state` enum ('complete','waitprocess','cancel','timeout','discarded','accepted') default 'waitprocess'
 )ENGINE=Innodb DEFAULT CHARSET =utf8;
 ```
