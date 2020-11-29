@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webwork.recruitsystem.Dao.TokenReqDao">
+    <resultMap type="com.webwork.recruitsystem.Model.TokenReq" id="TokenReq">
+        <id column="req_id" property="req_id"/>
+        <!--        字段名和实体名的映射-->
+        <result column="token_id" property="token_id"/>
+        <result column="rec_username" property="rec_username"/>
+        <result column="req_username" property="req_username"/>
+        <result column="req_desc" property="req_desc"/>
+        <result column="created_time" property="created_time"/>
+        <result column="modified_time" property="modified_time"/>
+        <result column="state" property="state"/>
+    </resultMap>
+
+    <select id="AllToken" resultMap="com.webwork.recruitsystem.Model.Token">
+        select *
+        from token
+        where state == 'waitresp'
+    </select>
+
+    <select id="AllTokenReq" parameterType="com.webwork.recruitsystem.Model.TokenReq" resultMap="TokenReq">
+        select *
+        from tokenreq
+        where req_username = #{req_username}
+    </select>
+
+    <select id="UnPcsReq" parameterType="com.webwork.recruitsystem.Model.TokenReq" resultMap="TokenReq">
+        select *
+        from tokenreq
+        where rec_username = #{rec_username} and state = 'waitprocess'
+    </select>
+
+    <insert id="CreateTokenReq" parameterType="com.webwork.recruitsystem.Model.TokenReq">
+        insert into tokenreq(token_id,rec_username,req_username,req_desc,created_time,state)
+        values (#{token_id},#{rec_username},#{req_username},#{req_desc},#{created_time},#{state})
+    </insert>
+
+    <update id="UpdateTokenReq" parameterType="com.webwork.recruitsystem.Model.TokenReq">
+        update tokenreq
+        set req_desc = #{req_desc}
+        where req_id = #{req_id} and req_username = #{req_username} and state = 'waitprocess'
+    </update>
+
+    <delete id="DeleteTokenReq" parameterType="com.webwork.recruitsystem.Model.TokenReq">
+        delete from tokenreq
+        where req_id= #{req_id} and state = 'waitprocess'
+    </delete>
+
+</mapper>

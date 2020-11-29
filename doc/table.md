@@ -39,12 +39,13 @@ create table if not exists `Token`(
 3.召集令请求类
 ```mysql
 create table if not exists `TokenReq`(
-    `req_id`    int unsigned not null,
+    `req_id`    int unsigned not null primary key auto_increment,
     `token_id`  int unsigned not null,
-    `username`  varchar(30) not null,       #是否可以使用user_id
+    `rec_username` varchar(30) not null ,
+    `req_username`  varchar(30) not null,       #是否可以使用user_id
     `req_desc`  varchar(100) not null ,
     `created_time` DATE not null,
     `modified_time` DATE default null,
-    `state` enum ('complete','waitprocess','cancel','timeout') default 'waitprocess'
-)
+    `state` enum ('complete','waitprocess','cancel','timeout','discarded','accept') default 'waitprocess'
+)ENGINE=Innodb DEFAULT CHARSET =utf8;
 ```

@@ -1,7 +1,9 @@
 package com.webwork.recruitsystem.Controller;
 
 import com.webwork.recruitsystem.Model.Token;
+import com.webwork.recruitsystem.Model.TokenReq;
 import com.webwork.recruitsystem.Service.TokenOwnerService;
+import com.webwork.recruitsystem.Service.TokenReqService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.spel.ast.NullLiteral;
 import org.springframework.stereotype.Controller;
@@ -24,6 +26,8 @@ import java.util.Map;
 public class TokenOwnerController {
     @Autowired
     TokenOwnerService tokenOwnerService;
+    @Autowired
+    TokenReqService tokenReqService;
 
     @RequestMapping("/all")
     @ResponseBody
@@ -117,6 +121,67 @@ public class TokenOwnerController {
         return resp;
     }
 
+    @RequestMapping("/processReq")
+    @ResponseBody
+    public Object GetUnProcessReq(@RequestBody TokenReq tokenReq){
+        System.out.println("get unprocess request");
+
+        List<TokenReq> tokenReqs = tokenReqService.UnPcsReq(tokenReq);
+
+        Response resp = new Response();
+        if (tokenReqs == null){
+            resp.code=404;
+            resp.message="fail";
+        }else{
+            resp.code=200;
+            resp.message="success";
+        }
+        return resp;
+    }
+    /*
+    @RequestMapping("/discardReq")
+    @ResponseBody
+    public Object DiscardReq(RequestBody TokenReq tokenReq){
+        System.out.println("discard request");
+
+        //直接将
+        boolean ok = tokenReqService.SetState();
+
+        Response resp = new Response();
+        if (ok == false){
+            resp.code=500;
+            resp.message="fail";
+        }else{
+            resp.code=200;
+            resp.message="success";
+        }
+        return resp;
+    }
+
+    @RequestMapping("/acceptReq")
+    @ResponseBody
+    public Object DiscardReq(RequestBody TokenReq tokenReq){
+        System.out.println("discard request");
+
+        //获取当前令的召集人数  看是否还有位置
+
+        //设置召集令
+        boolean ok = tokenReqService.SetState(tokenReq);
+
+        //更新发布令里面的人数+1
+
+        Response resp = new Response();
+        if (ok == false){
+            resp.code=500;
+            resp.message="fail";
+        }else{
+            resp.code=200;
+            resp.message="success";
+        }
+        return resp;
+    }
+
+     */
 
 }
 
