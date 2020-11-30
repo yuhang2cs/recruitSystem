@@ -26,6 +26,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User[] allQuery() {
+        return userDao.allQuery();
+    }
+
+    @Override
     public User selectQuery(User user) {
         return userDao.selectQuery(user);
     }

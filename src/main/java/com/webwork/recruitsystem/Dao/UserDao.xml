@@ -21,8 +21,12 @@
     </resultMap>
 
     <select id="loginQuery"  parameterType="com.webwork.recruitsystem.Model.User" resultMap="User">
-        select * from user
+        select username,password from user
         where username = #{username} and password = #{password}
+    </select>
+    <select id="allQuery" resultMap="User">
+        select * from user
+        where user_type = 0
     </select>
     <select id="selectQuery"  parameterType="com.webwork.recruitsystem.Model.User" resultMap="User">
         select * from user

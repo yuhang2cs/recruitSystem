@@ -1,14 +1,17 @@
 package com.webwork.recruitsystem.Controller;
 
 
+import com.webwork.recruitsystem.Config.Audience;
 import com.webwork.recruitsystem.Model.User;
 import com.webwork.recruitsystem.Service.UserService;
+import com.webwork.recruitsystem.utils.TokenUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -21,6 +24,9 @@ import java.util.UUID;
 public class UserController {
     @Autowired
     UserService userService;
+
+    @Autowired
+    Audience audience;
 
     @RequestMapping("/login")
     @ResponseBody
@@ -35,16 +41,11 @@ public class UserController {
 
             //设置为已经登录
             session.setAttribute("loginUser",username);
-            resp.token="test";
+            resp.token= TokenUtils.createJWT(Integer.toString(users.getUser_id()),username,audience);
             session.setAttribute("token","test");
             System.out.println(session.getId());
             resp.isSuccess="success";
-            //todo token的生成
             resp.kind=users.getUser_type();
-            response.setHeader("Access-Control-Allow-Origin","http://localhost:3000");
-            response.setHeader("Access-Control-Allow-Credentials","true");
-            response.setHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT");
-            response.setHeader("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
         }else{
             resp.isSuccess="fail";
         }
@@ -53,17 +54,39 @@ public class UserController {
     @RequestMapping("/logout")
     @ResponseBody
     public Object logout(@RequestBody String token, HttpSession session, HttpServletRequest request){
-        System.out.println(request.getHeader("Origin"));
-        String userToken= (String) session.getAttribute("token");
+//        String userToken= (String) session.getAttribute("token");
         System.out.println(session.getId());
-        System.out.println(userToken);
+//        System.out.println(userToken);
         System.out.println(token);
-        if(token.equals(userToken)){
-            session.removeAttribute("loginUser");
-            return "success";
-        }
+//        if(token.equals(userToken)){
+//            session.removeAttribute("loginUser");
+//            return "success";
+//        }
         return "fail";
     }
+
+    @RequestMapping("/all")
+    @ResponseBody
+    public Object allQuery() {
+        allResp resp=new allResp();
+        resp.isSuccess="success";
+        resp.user=userService.allQuery();
+        return resp;
+    }
+
+//    @RequestMapping("/register")
+//    @ResponseBody
+//    public Object insertQuery(@RequestParam("user") User user, @RequestParam("file") MultipartFile multipartFile) {
+//        user.setRegister_time(new Date());
+//        System.out.println(user);
+//        int count = userService.insertQuery(user);
+//        if(count == 1) {
+//            return "success";
+//        }else {
+//            return "fail";
+//        }
+//
+//    }
 
     @RequestMapping("/register")
     @ResponseBody
@@ -95,10 +118,10 @@ public class UserController {
     }
     @RequestMapping("/info")
     @ResponseBody
-    public Object userInfo(@RequestParam String username,@RequestBody String token){
+    public Object userInfo(@RequestParam String username){
         selectResp resp= new selectResp();
         User users = userService.selectQuery(new User(username,null));
-        if(users != null && token.equals("test")) {
+        if(users != null) {
             //todo 换成log
             System.out.println(users);
             resp.isSuccess="success";
@@ -128,6 +151,27 @@ class updateReq{
 
     public void setToken(String token) {
         this.token = token;
+    }
+}
+
+class allResp{
+    String isSuccess;
+    User[] user;
+
+    public String getIsSuccess() {
+        return isSuccess;
+    }
+
+    public void setIsSuccess(String isSuccess) {
+        this.isSuccess = isSuccess;
+    }
+
+    public User[] getUser() {
+        return user;
+    }
+
+    public void setUser(User[] user) {
+        this.user = user;
     }
 }
 
