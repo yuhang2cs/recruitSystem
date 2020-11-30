@@ -9,5 +9,6 @@ public interface UserDao {
     public int insertQuery(User user);
     public int updateQuery(User user);
     public User selectQuery(User uesr);
+    public User[] allQuery();
 
 }

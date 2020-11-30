@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webwork.recruitsystem.Dao.ImageDao">
+
+    <select id="getImage"  parameterType="java.lang.Integer" resultType="java.sql.Blob">
+        select image from images
+        where id=#{id}
+    </select>
+    <insert id="insertImage" parameterType="java.sql.Blob">
+        insert into images (image) values
+        (#{image})
+    </insert>
+</mapper>
