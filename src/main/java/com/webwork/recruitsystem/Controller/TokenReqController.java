@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -66,6 +67,8 @@ public class TokenReqController {
     public Object CreateTokenReq(@RequestBody TokenReq tokenReq){
         System.out.println("Create tokenreq");
 
+        System.out.println(tokenReq.toString());
+        tokenReq.setCreated_time(new Date());
         boolean ok = tokenReqService.CreateTokenReq(tokenReq);
 
         Response resp = new Response();

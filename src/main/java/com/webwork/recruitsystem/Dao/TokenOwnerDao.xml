@@ -19,11 +19,11 @@
         <result column="state" property="state"/>
     </resultMap>
 
-    <insert id="CreateToken"  parameterType="com.webwork.recruitsystem.Model.Token">
-        insert into token(user_id,username,token_type,token_name,token_desc,recruit_number,recruit_end,photo,created_time,state)
-        values(#{user_id},#{username},#{token_type},#{token_name},#{token_desc},#{recruit_number},#{recruit_end},#{photo},#{created_time},#{state})
+    <insert id="CreateToken" parameterType="com.webwork.recruitsystem.Model.Token">
+        insert into token (user_id,username,token_type,token_name,token_desc,recruit_nums,recruit_end,photo,created_time,state)
+        values(#{user_id},#{username},#{token_type},#{token_name},#{token_desc},#{recruit_nums},#{recruit_end},#{photo},#{created_time},#{state})
     </insert>
-    <delete id="DeleteToken"  parameterType="com.webwork.recruitsystem.Model.Token">
+    <delete id="DeleteToken" parameterType="com.webwork.recruitsystem.Model.Token">
         delete from token
         where token_id = #{token_id}
     </delete>

@@ -14,6 +14,8 @@ public class TokenOwnerServiceImpl implements TokenOwnerService{
 
     @Override
     public boolean CreateToken(Token token) {
+        System.out.println("123123123123");
+        System.out.println(token.toString());
         return tokenOwnerDao.CreateToken(token);
     }
 

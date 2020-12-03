@@ -108,6 +108,8 @@ public class TokenOwnerController {
     public Object CreateToken(@RequestBody Token token){
         System.out.println("create");
         token.setCreated_time(new Date());
+        token.setRecruit_end(new Date());
+        token.setPhoto("123123");
         System.out.println(token.toString());
         boolean ok = tokenOwnerService.CreateToken(token);
         Response resp = new Response();
