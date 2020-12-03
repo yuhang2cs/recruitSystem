@@ -14,7 +14,7 @@
         <result column="state" property="state"/>
     </resultMap>
 
-    <select id="AllToken" resultMap="com.webwork.recruitsystem.Model.Token">
+    <select id="AllToken" resultType="com.webwork.recruitsystem.Model.Token">
         select *
         from token
         where state = 'waitresp'
