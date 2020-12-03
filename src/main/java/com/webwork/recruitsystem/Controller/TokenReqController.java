@@ -33,7 +33,7 @@ public class TokenReqController {
         }else{
             resp.code=200;
             resp.message="query success";
-            resp.data=Tokens;
+            resp.setData(Tokens);
         }
         return resp;
     }
@@ -47,7 +47,6 @@ public class TokenReqController {
         tokenReq.setReq_username(req_username);
 
         List<TokenReq> tokenReqs = tokenReqService.AllTokenReq(tokenReq);
-
         //添加一个循环，然后对于每一个请求对应的召集令找出来
         //然后比较时间是否已经过期,用来判断请求是否timeout
 
@@ -58,6 +57,7 @@ public class TokenReqController {
         }else{
             resp.code=200;
             resp.message="success";
+            resp.setData(tokenReqs);
         }
         return resp;
     }
@@ -87,6 +87,7 @@ public class TokenReqController {
     public Object UpdateTokenReq(@RequestBody TokenReq tokenReq){
         System.out.println("update tokenreq");
 
+        tokenReq.setModified_time(new Date());
         boolean ok = tokenReqService.UpdateTokenReq(tokenReq);
 
         Response resp = new Response();
@@ -104,6 +105,7 @@ public class TokenReqController {
     @ResponseBody
     public Object DeleteTokenReq(@RequestBody TokenReq tokenReq){
         System.out.println("delete");
+
 
         boolean ok = tokenReqService.DeleteTokenReq(tokenReq);
 

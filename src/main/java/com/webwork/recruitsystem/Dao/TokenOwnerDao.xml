@@ -30,7 +30,7 @@
     <update id="UpdateToken" parameterType="com.webwork.recruitsystem.Model.Token">
         update token
         set token_type = #{token_type},token_name = #{token_name},token_desc = #{token_desc},
-        recruit_nums=#{recruit_nums},cur_recruited_nums=#{cur_recruited_nums},recruit_end=#{recruit_end},photo=#{photo}
+        recruit_nums=#{recruit_nums},cur_recruited_nums=#{cur_recruited_nums},recruit_end=#{recruit_end},photo=#{photo},
         modified_time=#{modified_time},state=#{state}
         where token_id = #{token_id}
     </update>

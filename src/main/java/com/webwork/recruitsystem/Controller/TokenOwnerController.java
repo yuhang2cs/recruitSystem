@@ -31,21 +31,21 @@ public class TokenOwnerController {
 
     @RequestMapping("/all")
     @ResponseBody
-    public Object QueryTokens(@RequestParam("username") String username,
-                              HttpServletResponse response){
+    public Object QueryTokens(@RequestParam("username") String username){
         System.out.println("querytokens: "+username);
         Token token = new Token();
         token.setUsername(username);
         List<Token> tokens = tokenOwnerService.QueryTokens(token);
+
+        System.out.println("");
         Response resp = new Response();
-        response.setHeader("author","track");
         if (tokens == null){
             resp.code=404;
             resp.message="TokenList are empty";
         }else{
             resp.code=200;
             resp.message="success";
-            resp.data=tokens;
+            resp.setData(tokens);
         }
         return resp;
     }
@@ -92,6 +92,7 @@ public class TokenOwnerController {
     public Object UpdateToken(@RequestBody Token token){
         System.out.println("update");
         token.setModified_time(new Date());
+        token.setRecruit_end(new Date());
         boolean ok = tokenOwnerService.UpdateToken(token);
         Response resp = new Response();
         if (ok == false){
@@ -139,6 +140,7 @@ public class TokenOwnerController {
         }else{
             resp.code=200;
             resp.message="success";
+            resp.setData(tokenReqs);
         }
         return resp;
     }
@@ -146,9 +148,7 @@ public class TokenOwnerController {
     @RequestMapping("/discardReq")
     @ResponseBody
     public Object DiscardReq(@RequestBody TokenReq tokenReq){
-        System.out.println("discard request");
-
-        //直接将
+        System.out.println("discard request"+tokenReq.getReq_id());
         tokenReq.setState("discarded");
         boolean ok = tokenReqService.SetState(tokenReq);
 
@@ -166,7 +166,7 @@ public class TokenOwnerController {
     @RequestMapping("/acceptReq")
     @ResponseBody
     public Object AcceptReq(@RequestBody TokenReq tokenReq){
-        System.out.println("accept request");
+        System.out.println("accept request"+tokenReq.getToken_id()+" "+tokenReq.getReq_id());
         //获取当前令的召集人数  看是否还有位置
         Response resp = new Response();
         resp.code=500;
@@ -188,7 +188,7 @@ public class TokenOwnerController {
         // 3更新token里面的人数+1
         if(ok1&&ok2){
             token.setCur_recruited_nums(token.getCur_recruited_nums()+1);
-            tokenOwnerService.UpdateToken(token);
+            ok3=tokenOwnerService.UpdateToken(token);
         }
 
         if (ok1&&ok2&&ok3){
