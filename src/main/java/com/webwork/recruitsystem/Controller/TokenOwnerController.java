@@ -75,6 +75,7 @@ public class TokenOwnerController {
         System.out.println("delete: "+token_id);
         Token token = new Token();
         token.setToken_id(token_id);
+        //todo 检查这个召集令有没有人响应再delete
         boolean ok = tokenOwnerService.DeleteToken(token);
         Response resp = new Response();
         if (ok == false){
@@ -93,6 +94,7 @@ public class TokenOwnerController {
         System.out.println("update");
         token.setModified_time(new Date());
         token.setRecruit_end(new Date());
+        //todo 检查这个召集令有没有人响应再update
         boolean ok = tokenOwnerService.UpdateToken(token);
         Response resp = new Response();
         if (ok == false){
