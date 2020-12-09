@@ -5,7 +5,6 @@
     <resultMap type="com.webwork.recruitsystem.Model.Token" id="Token">
         <id column="token_id" property="token_id"/>
         <!--        字段名和实体名的映射-->
-        <result column="user_id" property="user_id"/>
         <result column="username" property="username"/>
         <result column="token_type" property="token_type"/>
         <result column="token_name" property="token_name"/>
@@ -20,8 +19,8 @@
     </resultMap>
 
     <insert id="CreateToken" parameterType="com.webwork.recruitsystem.Model.Token">
-        insert into token (user_id,username,token_type,token_name,token_desc,recruit_nums,recruit_end,photo,created_time,state)
-        values(#{user_id},#{username},#{token_type},#{token_name},#{token_desc},#{recruit_nums},#{recruit_end},#{photo},#{created_time},#{state})
+        insert into token (username,token_type,token_name,token_desc,recruit_nums,recruit_end,photo,created_time)
+        values(#{username},#{token_type},#{token_name},#{token_desc},#{recruit_nums},#{recruit_end},#{photo},#{created_time})
     </insert>
     <delete id="DeleteToken" parameterType="com.webwork.recruitsystem.Model.Token">
         delete from token
@@ -30,8 +29,13 @@
     <update id="UpdateToken" parameterType="com.webwork.recruitsystem.Model.Token">
         update token
         set token_type = #{token_type},token_name = #{token_name},token_desc = #{token_desc},
-        recruit_nums=#{recruit_nums},cur_recruited_nums=#{cur_recruited_nums},recruit_end=#{recruit_end},photo=#{photo},
-        modified_time=#{modified_time},state=#{state}
+        recruit_nums=#{recruit_nums},recruit_end=#{recruit_end},photo=#{photo},
+        modified_time=#{modified_time}
+        where token_id = #{token_id}
+    </update>
+    <update id="TokenCruit" parameterType="com.webwork.recruitsystem.Model.Token">
+        update token
+        set cur_recruited_nums=#{cur_recruited_nums},state=#{state}
         where token_id = #{token_id}
     </update>
     <select id="QueryOneToken" parameterType="com.webwork.recruitsystem.Model.Token" resultMap="Token">
@@ -43,5 +47,10 @@
         select *
         from token
         where username = #{username}
+    </select>
+    <select id="QueryAllTokens" resultMap="Token">
+        select *
+        from token
+        order by state
     </select>
 </mapper>

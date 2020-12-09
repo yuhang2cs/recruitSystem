@@ -24,6 +24,8 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
         // 获取请求头信息authorization信息
         final String authHeader = request.getHeader(JwtTokenUtil.AUTH_HEADER_KEY);
         if(authHeader==null){
+            log.info("### 此次请求未带上authorization ###");
+            response.setStatus(403);
             return false;
         }
         log.info("## authHeader= {}", authHeader);

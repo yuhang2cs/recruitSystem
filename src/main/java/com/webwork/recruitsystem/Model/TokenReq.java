@@ -5,11 +5,26 @@ import java.util.Date;
 public class TokenReq {
     private int req_id;
     private int token_id;
-    private String rec_username;
+    private String owner_username;
     private String req_username;
     private String req_desc;
     private Date created_time;
     private Date modified_time;
+
+    @Override
+    public String toString() {
+        return "TokenReq{" +
+                "req_id=" + req_id +
+                ", token_id=" + token_id +
+                ", owner_username='" + owner_username + '\'' +
+                ", req_username='" + req_username + '\'' +
+                ", req_desc='" + req_desc + '\'' +
+                ", created_time=" + created_time +
+                ", modified_time=" + modified_time +
+                ", state='" + state + '\'' +
+                '}';
+    }
+
     private String state;
 
     public int getReq_id() {
@@ -28,12 +43,12 @@ public class TokenReq {
         this.token_id = token_id;
     }
 
-    public String getRec_username() {
-        return rec_username;
+    public String getowner_username() {
+        return owner_username;
     }
 
-    public void setRec_username(String rec_username) {
-        this.rec_username = rec_username;
+    public void setowner_username(String owner_username) {
+        this.owner_username = owner_username;
     }
 
     public String getReq_username() {

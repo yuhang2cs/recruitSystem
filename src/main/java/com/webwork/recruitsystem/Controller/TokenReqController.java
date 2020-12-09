@@ -3,6 +3,7 @@ package com.webwork.recruitsystem.Controller;
 
 import com.webwork.recruitsystem.Model.Token;
 import com.webwork.recruitsystem.Model.TokenReq;
+import com.webwork.recruitsystem.Service.TokenOwnerService;
 import com.webwork.recruitsystem.Service.TokenReqService;
 import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,27 +21,27 @@ import java.util.List;
 public class TokenReqController {
     @Autowired
     TokenReqService tokenReqService;
+    @Autowired
+    TokenOwnerService tokenOwnerService;
 
-    @RequestMapping("/allToken")
+    @RequestMapping("/allReq")
     @ResponseBody
-    public Object AllToken(){
-        System.out.println("get all current recruit tokens");
-        List<Token> Tokens=tokenReqService.AllToken();
-        Response resp = new Response();
-        if(Tokens == null){
-            resp.code=404;
-            resp.message="query fail";
+    public TokenReqResp AllReq(@RequestParam("username")String username,@RequestParam("token_id")int token_id){
+        TokenReqResp tokenReqResp=new TokenReqResp();
+        List<TokenReq> tokenReqs=tokenReqService.AllTokenReqByOwner(username,token_id);
+
+        if(tokenReqs == null){
+            tokenReqResp.message="fail";
         }else{
-            resp.code=200;
-            resp.message="query success";
-            resp.setData(Tokens);
+            tokenReqResp.message="success";
+            tokenReqResp.setTokenReqs(tokenReqs);
         }
-        return resp;
+        return tokenReqResp;
     }
 
-    @RequestMapping("/myReq")
+    @RequestMapping("/myAll")
     @ResponseBody
-    public Object AllTokenReq(@RequestParam("req_username") String req_username){
+    public Object AllMyTokenReq(@RequestParam("req_username") String req_username){
         System.out.println("get all token req");
 
         TokenReq tokenReq = new TokenReq();
@@ -62,17 +63,151 @@ public class TokenReqController {
         return resp;
     }
 
+    @RequestMapping("/myWait")
+    @ResponseBody
+    public Object MyWaitTokenReq(@RequestParam("req_username") String req_username){
+        System.out.println("get all token req");
+
+        List<TokenReq> tokenReqs = tokenReqService.MyWairProcReq(req_username);
+        //添加一个循环，然后对于每一个请求对应的召集令找出来
+        //然后比较时间是否已经过期,用来判断请求是否timeout
+
+        Response resp = new Response();
+        if (tokenReqs == null){
+            resp.code=404;
+            resp.message="fail";
+        }else{
+            resp.code=200;
+            resp.message="success";
+            resp.setData(tokenReqs);
+        }
+        return resp;
+    }
+
+    @RequestMapping("/myAccept")
+    @ResponseBody
+    public Object MyAcceptTokenReq(@RequestParam("req_username") String req_username){
+        System.out.println("get all token req");
+
+        List<TokenReq> tokenReqs = tokenReqService.MyAcceptedReq(req_username);
+        //添加一个循环，然后对于每一个请求对应的召集令找出来
+        //然后比较时间是否已经过期,用来判断请求是否timeout
+
+        Response resp = new Response();
+        if (tokenReqs == null){
+            resp.code=404;
+            resp.message="fail";
+        }else{
+            resp.code=200;
+            resp.message="success";
+            resp.setData(tokenReqs);
+        }
+        return resp;
+    }
+
     @RequestMapping("/create")
     @ResponseBody
     public Object CreateTokenReq(@RequestBody TokenReq tokenReq){
-        System.out.println("Create tokenreq");
+//        Token token=new Token();
+//        token.setToken_id(tokenReq.getToken_id());
+//        token=tokenOwnerService.QueryOneToken(token);
+//        if(token.getUsername().equals(tokenReq.ge))
+        Response resp = new Response();
+        if(tokenReq.getowner_username().equals(tokenReq.getReq_username())){
+            resp.message="禁止接自己发的令";
+            return resp;
+        }
+        //一个人不能多次接受一个令
+        int count=tokenReqService.isExist(tokenReq);
+        if(count>0){
+            resp.message="你已经接过此令";
+            return resp;
+        }
 
-        System.out.println(tokenReq.toString());
         tokenReq.setCreated_time(new Date());
-        boolean ok = tokenReqService.CreateTokenReq(tokenReq);
+        int row = tokenReqService.CreateTokenReq(tokenReq);
+        if(row==0){
+            resp.message="接令请求失败";
+            return resp;
+        }
+        resp.code=200;
+        resp.message="success";
+        return resp;
+    }
+
+    @RequestMapping("/accpet")
+    @ResponseBody
+    public Object AcceptTokenReq(@RequestParam("req_id") int req_id){
+        TokenReq tokenReq=new TokenReq();
+        tokenReq.setReq_id(req_id);
+        //获取要接受的token_id
+        tokenReq=tokenReqService.QueryOneReq(req_id);
+
+        //增加该token的人数
+        Token token=new Token();
+        token.setToken_id(tokenReq.getToken_id());
+        token=tokenOwnerService.QueryOneToken(token);
+        System.out.println(token);
+        token.setCur_recruited_nums(token.getCur_recruited_nums()+1);
+        System.out.println(token);
+        if(token.getCur_recruited_nums()==token.getRecruit_nums()){
+            token.setState("complete");
+        }
+        int row=tokenOwnerService.TokenCruit(token);
+        Response resp = new Response();
+        if(row==0){
+            resp.code=404;
+            resp.message="fail";
+            return resp;
+        }
+        tokenReq.setState("accepted");
+        tokenReq.setModified_time(new Date());
+        row = tokenReqService.SetState(tokenReq);
+
+        if (row == 0){
+            resp.code=404;
+            resp.message="fail";
+        }else{
+            resp.code=200;
+            resp.message="success";
+        }
+        return resp;
+    }
+
+    @RequestMapping("/reject")
+    @ResponseBody
+    public Object RejectTokenReq(@RequestParam("req_id") int req_id){
+
+        TokenReq tokenReq=new TokenReq();
+        tokenReq.setReq_id(req_id);
+        tokenReq.setState("discarded");
+        tokenReq.setModified_time(new Date());
+        int row = tokenReqService.SetState(tokenReq);
 
         Response resp = new Response();
-        if (ok == false){
+        if (row == 0){
+            resp.code=404;
+            resp.message="fail";
+        }else{
+            resp.code=200;
+            resp.message="success";
+        }
+        return resp;
+    }
+
+    @RequestMapping("/cancel")
+    @ResponseBody
+    public Object CancelTokenReq(@RequestParam("req_id") int req_id){
+
+        TokenReq tokenReq=new TokenReq();
+        tokenReq.setReq_id(req_id);
+        tokenReq.setState("cancel");
+        tokenReq.setModified_time(new Date());
+        System.out.println(tokenReq);
+        int row = tokenReqService.SetState(tokenReq);
+
+        Response resp = new Response();
+        if (row == 0){
             resp.code=404;
             resp.message="fail";
         }else{
@@ -103,11 +238,11 @@ public class TokenReqController {
 
     @RequestMapping("/delete")
     @ResponseBody
-    public Object DeleteTokenReq(@RequestBody TokenReq tokenReq){
+    public Object DeleteTokenReq(@RequestParam("req_id") int req_id){
         System.out.println("delete");
 
 
-        boolean ok = tokenReqService.DeleteTokenReq(tokenReq);
+        boolean ok = tokenReqService.DeleteTokenReq(req_id);
 
         Response resp = new Response();
         if (ok == false){
@@ -118,5 +253,26 @@ public class TokenReqController {
             resp.message="success";
         }
         return resp;
+    }
+}
+
+class TokenReqResp{
+    String message;
+    List<TokenReq> tokenReqs;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public List<TokenReq> getTokenReqs() {
+        return tokenReqs;
+    }
+
+    public void setTokenReqs(List<TokenReq> tokenReqs) {
+        this.tokenReqs = tokenReqs;
     }
 }

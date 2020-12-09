@@ -31,11 +31,16 @@ public class TokenOwnerController {
 
     @RequestMapping("/all")
     @ResponseBody
-    public Object QueryTokens(@RequestParam("username") String username){
-        System.out.println("querytokens: "+username);
-        Token token = new Token();
-        token.setUsername(username);
-        List<Token> tokens = tokenOwnerService.QueryTokens(token);
+    public Object QueryTokens(@RequestParam(value = "username",required = false) String username){
+        List<Token> tokens=null;
+        if(username!=null){
+            System.out.println("querytokens: "+username);
+            Token token = new Token();
+            token.setUsername(username);
+            tokens = tokenOwnerService.QueryTokens(token);
+        }else {
+            tokens=tokenOwnerService.QueryAllTokens();
+        }
 
         System.out.println("");
         Response resp = new Response();
@@ -75,10 +80,16 @@ public class TokenOwnerController {
         System.out.println("delete: "+token_id);
         Token token = new Token();
         token.setToken_id(token_id);
-        //todo 检查这个召集令有没有人响应再delete
+        Token tobeDeleteToken = tokenOwnerService.QueryOneToken(token);
         boolean ok = tokenOwnerService.DeleteToken(token);
+        System.out.println(ok);
         Response resp = new Response();
-        if (ok == false){
+        if(tobeDeleteToken.getCur_recruited_nums()>0){
+            resp.code=403;
+            resp.message="不可以删除";
+            return resp;
+        }
+        if (!ok){
             resp.code=404;
             resp.message="fail";
         }else{
@@ -93,11 +104,9 @@ public class TokenOwnerController {
     public Object UpdateToken(@RequestBody Token token){
         System.out.println("update");
         token.setModified_time(new Date());
-        token.setRecruit_end(new Date());
-        //todo 检查这个召集令有没有人响应再update
-        boolean ok = tokenOwnerService.UpdateToken(token);
+        int row = tokenOwnerService.UpdateToken(token);
         Response resp = new Response();
-        if (ok == false){
+        if (row == 1){
             resp.code=404;
             resp.message="fail";
         }else{
@@ -111,7 +120,6 @@ public class TokenOwnerController {
     public Object CreateToken(@RequestBody Token token){
         System.out.println("create");
         token.setCreated_time(new Date());
-        token.setRecruit_end(new Date());
         token.setPhoto("123123");
         System.out.println(token.toString());
         boolean ok = tokenOwnerService.CreateToken(token);
@@ -152,10 +160,10 @@ public class TokenOwnerController {
     public Object DiscardReq(@RequestBody TokenReq tokenReq){
         System.out.println("discard request"+tokenReq.getReq_id());
         tokenReq.setState("discarded");
-        boolean ok = tokenReqService.SetState(tokenReq);
+        int row = tokenReqService.SetState(tokenReq);
 
         Response resp = new Response();
-        if (ok == false){
+        if (row == 0){
             resp.code=500;
             resp.message="fail";
         }else{
@@ -165,40 +173,6 @@ public class TokenOwnerController {
         return resp;
     }
 
-    @RequestMapping("/acceptReq")
-    @ResponseBody
-    public Object AcceptReq(@RequestBody TokenReq tokenReq){
-        System.out.println("accept request"+tokenReq.getToken_id()+" "+tokenReq.getReq_id());
-        //获取当前令的召集人数  看是否还有位置
-        Response resp = new Response();
-        resp.code=500;
-        resp.message="fail";
-        boolean ok1=false,ok2=false,ok3=false;
-
-        Token queryToken= new Token();
-        queryToken.setToken_id(tokenReq.getToken_id());
-
-        // 1 查询当前的token,查看当前的人数和总人数
-        Token token = tokenOwnerService.QueryOneToken(queryToken);
-        if(token.getCur_recruited_nums()<token.getRecruit_nums())
-            ok1=true;
-        // 2 设置当场请求状态为accepted
-        if(ok1) {
-            tokenReq.setState("accepted");
-            ok2 = tokenReqService.SetState(tokenReq);
-        }
-        // 3更新token里面的人数+1
-        if(ok1&&ok2){
-            token.setCur_recruited_nums(token.getCur_recruited_nums()+1);
-            ok3=tokenOwnerService.UpdateToken(token);
-        }
-
-        if (ok1&&ok2&&ok3){
-            resp.code=200;
-            resp.message="success";
-        }
-        return resp;
-    }
 
 }
 

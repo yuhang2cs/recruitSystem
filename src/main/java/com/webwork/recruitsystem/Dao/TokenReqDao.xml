@@ -6,7 +6,7 @@
         <id column="req_id" property="req_id"/>
         <!--        字段名和实体名的映射-->
         <result column="token_id" property="token_id"/>
-        <result column="rec_username" property="rec_username"/>
+        <result column="owner_username" property="owner_username"/>
         <result column="req_username" property="req_username"/>
         <result column="req_desc" property="req_desc"/>
         <result column="created_time" property="created_time"/>
@@ -14,16 +14,38 @@
         <result column="state" property="state"/>
     </resultMap>
 
-    <select id="AllToken" resultType="com.webwork.recruitsystem.Model.Token">
+    <select id="AllTokenReqByOwner" parameterType="com.webwork.recruitsystem.Model.TokenReq" resultMap="TokenReq">
         select *
-        from token
-        where state = 'waitresp'
+        from tokenreq
+        where owner_username = #{owner_username} and token_id=#{token_id}
+        order by state
     </select>
 
-    <select id="AllTokenReq" parameterType="com.webwork.recruitsystem.Model.TokenReq" resultMap="TokenReq">
+    <select id="AllTokenReq" parameterType="java.lang.String" resultMap="TokenReq">
         select *
         from tokenreq
         where req_username = #{req_username}
+        order by state
+    </select>
+    <select id="QueryOneReq" parameterType="java.lang.Integer" resultMap="TokenReq">
+        select *
+        from tokenreq
+        where req_id = #{req_id}
+    </select>
+    <select id="isExist" parameterType="com.webwork.recruitsystem.Model.TokenReq" resultType="java.lang.Integer">
+        select count(*)
+        from tokenreq
+        where token_id = #{token_id} and req_username=#{req_username}
+    </select>
+    <select id="MyWairProcReq" parameterType="java.lang.String" resultMap="TokenReq">
+        select *
+        from tokenreq
+        where req_username = #{req_username} and state='waitprocess'
+    </select>
+    <select id="MyAcceptedReq" parameterType="java.lang.String" resultMap="TokenReq">
+        select *
+        from tokenreq
+        where req_username = #{req_username} and state='accepted'
     </select>
 
     <select id="UnPcsReq" parameterType="com.webwork.recruitsystem.Model.TokenReq" resultMap="TokenReq">
@@ -33,25 +55,25 @@
     </select>
 
     <insert id="CreateTokenReq" parameterType="com.webwork.recruitsystem.Model.TokenReq">
-        insert into tokenreq(token_id,rec_username,req_username,req_desc,created_time,state)
-        values (#{token_id},#{rec_username},#{req_username},#{req_desc},#{created_time},#{state})
+        insert into tokenreq(token_id,owner_username,req_username,req_desc,created_time)
+        values (#{token_id},#{owner_username},#{req_username},#{req_desc},#{created_time})
     </insert>
 
     <update id="UpdateTokenReq" parameterType="com.webwork.recruitsystem.Model.TokenReq">
         update tokenreq
-        set req_desc = #{req_desc}
+        set req_desc = #{req_desc},modified_time=#{modified_time}
         where req_id = #{req_id} and req_username = #{req_username} and state = 'waitprocess'
     </update>
 
     <update id="SetState" parameterType="com.webwork.recruitsystem.Model.TokenReq">
         update tokenreq
-        set state = #{state}
+        set state = #{state},modified_time=#{modified_time}
         where req_id = #{req_id}
     </update>
 
-    <delete id="DeleteTokenReq" parameterType="com.webwork.recruitsystem.Model.TokenReq">
+    <delete id="DeleteTokenReq" parameterType="java.lang.Integer">
         delete from tokenreq
-        where req_id= #{req_id} and state = 'waitprocess'
+        where req_id= #{req_id}
     </delete>
 
 </mapper>

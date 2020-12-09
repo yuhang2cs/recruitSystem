@@ -6,7 +6,6 @@ import java.util.Date;
 
 public class Token {
     private int token_id;
-    private int user_id;
     private String username;
     private String token_type;
     private String token_name;
@@ -33,10 +32,6 @@ public class Token {
 
     public void setState(String state) {
         this.state = state;
-    }
-
-    public int getUser_id() {
-        return user_id;
     }
 
     public String getToken_type() {
@@ -95,9 +90,6 @@ public class Token {
         this.modified_time = modified_time;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
 
     public String getUsername() {
         return username;
@@ -127,7 +119,6 @@ public class Token {
     public String toString() {
         return "Token{" +
                 "token_id=" + token_id +
-                ", user_id=" + user_id +
                 ", username='" + username + '\'' +
                 ", token_type='" + token_type + '\'' +
                 ", token_name='" + token_name + '\'' +

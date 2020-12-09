@@ -25,13 +25,23 @@ public class TokenOwnerServiceImpl implements TokenOwnerService{
     }
 
     @Override
-    public boolean UpdateToken(Token token) {
+    public int UpdateToken(Token token) {
         return tokenOwnerDao.UpdateToken(token);
+    }
+
+    @Override
+    public int TokenCruit(Token token) {
+        return tokenOwnerDao.TokenCruit(token);
     }
 
     @Override
     public Token QueryOneToken(Token token) {
         return tokenOwnerDao.QueryOneToken(token);
+    }
+
+    @Override
+    public List<Token> QueryAllTokens() {
+        return tokenOwnerDao.QueryAllTokens();
     }
 
     @Override

@@ -7,11 +7,15 @@ import com.webwork.recruitsystem.Model.TokenReq;
 import java.util.List;
 
 public interface TokenReqService {
-    List<Token> AllToken();
     List<TokenReq> AllTokenReq(TokenReq tokenReq);
+    List<TokenReq> AllTokenReqByOwner(String owner_username,int token_id);
+    List<TokenReq> MyWairProcReq(String req_username);
+    List<TokenReq> MyAcceptedReq(String req_username);
     List<TokenReq> UnPcsReq(TokenReq tokenReq);
-    boolean CreateTokenReq(TokenReq tokenReq);
+    TokenReq QueryOneReq(int req_id);
+    int isExist(TokenReq tokenReq);
+    int CreateTokenReq(TokenReq tokenReq);
     boolean UpdateTokenReq(TokenReq tokenReq);
-    boolean DeleteTokenReq(TokenReq tokenReq);
-    boolean SetState(TokenReq tokenReq);
+    boolean DeleteTokenReq(int req_id);
+    int SetState(TokenReq tokenReq);
 }

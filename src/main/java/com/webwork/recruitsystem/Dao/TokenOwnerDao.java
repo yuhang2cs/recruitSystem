@@ -9,7 +9,9 @@ import java.util.List;
 public interface TokenOwnerDao {
     boolean CreateToken(Token token);
     boolean DeleteToken(Token token);
-    boolean UpdateToken(Token token);
+    int UpdateToken(Token token);
+    int TokenCruit(Token token);
     Token QueryOneToken(Token token);
     List<Token> QueryTokens (Token token);
+    List<Token> QueryAllTokens ();
 }
