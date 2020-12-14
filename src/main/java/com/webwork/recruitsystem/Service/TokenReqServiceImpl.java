@@ -29,6 +29,11 @@ public class TokenReqServiceImpl implements TokenReqService{
     }
 
     @Override
+    public List<TokenReq> AllReqNoLimit() {
+        return tokenReqDao.AllReqNoLimit();
+    }
+
+    @Override
     public List<TokenReq> UnPcsReq(TokenReq tokenReq) {
         return tokenReqDao.UnPcsReq(tokenReq);
     }

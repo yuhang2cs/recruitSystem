@@ -1,10 +1,15 @@
 package com.webwork.recruitsystem.Controller;
 
 
+import com.webwork.recruitsystem.Dao.UserDao;
 import com.webwork.recruitsystem.Model.Token;
 import com.webwork.recruitsystem.Model.TokenReq;
+import com.webwork.recruitsystem.Model.Toll;
+import com.webwork.recruitsystem.Model.User;
 import com.webwork.recruitsystem.Service.TokenOwnerService;
 import com.webwork.recruitsystem.Service.TokenReqService;
+import com.webwork.recruitsystem.Service.TollService;
+import com.webwork.recruitsystem.Service.UserService;
 import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,12 +28,31 @@ public class TokenReqController {
     TokenReqService tokenReqService;
     @Autowired
     TokenOwnerService tokenOwnerService;
+    @Autowired
+    TollService tollService;
+    @Autowired
+    UserService userService;
 
     @RequestMapping("/allReq")
     @ResponseBody
     public TokenReqResp AllReq(@RequestParam("username")String username,@RequestParam("token_id")int token_id){
         TokenReqResp tokenReqResp=new TokenReqResp();
         List<TokenReq> tokenReqs=tokenReqService.AllTokenReqByOwner(username,token_id);
+
+        if(tokenReqs == null){
+            tokenReqResp.message="fail";
+        }else{
+            tokenReqResp.message="success";
+            tokenReqResp.setTokenReqs(tokenReqs);
+        }
+        return tokenReqResp;
+    }
+
+    @RequestMapping("/all")
+    @ResponseBody
+    public TokenReqResp AllReqNoLimit(){
+        TokenReqResp tokenReqResp=new TokenReqResp();
+        List<TokenReq> tokenReqs=tokenReqService.AllReqNoLimit();
 
         if(tokenReqs == null){
             tokenReqResp.message="fail";
@@ -163,6 +187,29 @@ public class TokenReqController {
         tokenReq.setState("accepted");
         tokenReq.setModified_time(new Date());
         row = tokenReqService.SetState(tokenReq);
+        Toll toll=new Toll();
+        toll.setDate(new Date());
+        //todo 可以根据不同的用户类别设置不同的金额
+        User owner=new User();
+        owner.setUsername(tokenReq.getowner_username());
+        User reqUser=new User();
+        reqUser.setUsername(tokenReq.getReq_username());
+        owner= userService.selectQuery(owner);
+        reqUser=userService.selectQuery(reqUser);
+        if(owner.getUser_level()==1){
+            toll.setOwner_toll(3);
+        }else if(owner.getUser_level()==2){
+            toll.setOwner_toll(2);
+        }else {
+            toll.setOwner_toll(1);
+        }
+        toll.setReq_toll(1);
+        toll.setOwner_username(token.getUsername());
+        toll.setReq_username(tokenReq.getReq_username());
+        toll.setReq_id(tokenReq.getReq_id());
+        System.out.println(toll);
+        tollService.insertToll(toll);
+
 
         if (row == 0){
             resp.code=404;

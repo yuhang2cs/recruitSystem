@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webwork.recruitsystem.Dao.TollSummaryDao">
+    <resultMap type="com.webwork.recruitsystem.Model.TollSummary" id="TollSummary">
+        <id column="id" property="id"/>
+        <!--        字段名和实体名的映射-->
+        <result column="date" property="date"/>
+        <result column="address" property="address"/>
+        <result column="token_type" property="token_type"/>
+        <result column="finish_num" property="finish_num"/>
+        <result column="total" property="total"/>
+    </resultMap>
+
+    <select id="querySummaryByDate" resultMap="TollSummary">
+        select * from TollSummary where date=#{date};
+    </select>
+    <select id="querySummaryByRangeDateWithTypeAndAddr" resultMap="TollSummary">
+        select * from TollSummary where date between #{start_date} and #{end_date} and token_type=#{token_type} and address=#{address};
+    </select>
+    <select id="querySummaryByAddress" resultMap="TollSummary">
+        select * from TollSummary where address=#{address};
+    </select>
+
+    <select id="querySummaryByType" resultMap="TollSummary">
+        select * from TollSummary where token_type=#{token_type};
+    </select>
+
+    <select id="querySummaryByDateAndTypeAndAddr" resultMap="TollSummary">
+        select * from TollSummary where token_type=#{token_type} and date=#{date} and address=#{address};
+    </select>
+
+    <insert id="insertSummary" parameterType="com.webwork.recruitsystem.Model.TollSummary">
+        insert into TollSummary(date, address, token_type, finish_num, total)
+        values (#{date},#{address},#{token_type},#{finish_num},#{total})
+    </insert>
+
+    <update id="modifySummary" parameterType="com.webwork.recruitsystem.Model.TollSummary">
+        update TollSummary set finish_num=#{finish_num},total=#{total} where id=#{id};
+    </update>
+
+</mapper>

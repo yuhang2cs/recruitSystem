@@ -6,6 +6,7 @@ public interface UserService {
     User loginQuery(User user);
     User selectQuery(User user);
     User[] allQuery();
+    void changeAllUserLevel();
     int updateQuery(User user);
     int insertQuery(User user);
 }

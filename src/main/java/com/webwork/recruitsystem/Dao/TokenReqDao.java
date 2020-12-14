@@ -10,6 +10,7 @@ import java.util.List;
 public interface TokenReqDao {
     List<TokenReq> AllTokenReq(TokenReq tokenReq);
     List<TokenReq> AllTokenReqByOwner(String owner_username,int token_id);
+    List<TokenReq> AllReqNoLimit();
     List<TokenReq> MyWairProcReq(String req_username);
     List<TokenReq> MyAcceptedReq(String req_username);
     List<TokenReq> UnPcsReq(TokenReq tokenReq);

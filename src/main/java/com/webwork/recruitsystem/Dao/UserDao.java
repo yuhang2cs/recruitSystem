@@ -8,6 +8,7 @@ public interface UserDao {
     public User loginQuery(User user);
     public int insertQuery(User user);
     public int updateQuery(User user);
+    public int updateLevel(User user);
     public User selectQuery(User uesr);
     public User[] allQuery();
 

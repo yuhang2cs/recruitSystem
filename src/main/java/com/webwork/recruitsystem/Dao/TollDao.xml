@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webwork.recruitsystem.Dao.TollDao">
+    <resultMap type="com.webwork.recruitsystem.Model.Toll" id="Toll">
+        <id column="toll_id" property="toll_id"/>
+        <!--        字段名和实体名的映射-->
+        <result column="req_id" property="req_id"/>
+        <result column="owner_username" property="owner_username"/>
+        <result column="req_username" property="req_username"/>
+        <result column="date" property="date"/>
+        <result column="owner_toll" property="owner_toll"/>
+        <result column="req_toll" property="req_toll"/>
+    </resultMap>
+    <resultMap type="com.webwork.recruitsystem.Model.TollByUser" id="user">
+        <id column="total" property="total"/>
+        <!--        字段名和实体名的映射-->
+        <result column="username" property="username"/>
+    </resultMap>
+
+    <resultMap type="com.webwork.recruitsystem.Model.TollByToken" id="token">
+        <id column="token_id" property="token_id"/>
+        <!--        字段名和实体名的映射-->
+        <result column="username" property="username"/>
+        <result column="token_type" property="token_type"/>
+        <result column="token_name" property="token_name"/>
+        <result column="token_desc" property="token_desc"/>
+        <result column="recruit_nums" property="recruit_nums"/>
+        <result column="cur_recruited_nums" property="cur_recruited_nums"/>
+        <result column="recruit_end" property="recruit_end"/>
+        <result column="photo" property="photo"/>
+        <result column="created_time" property="created_time"/>
+        <result column="modified_time" property="modified_time"/>
+        <result column="state" property="state"/>
+        <result column="total" property="total"/>
+    </resultMap>
+
+    <select id="selectAggregateByUesr" resultMap="user">
+        select username,sum(toll) as total
+        from (select owner_username as username,sum(owner_toll) as toll
+        from Toll
+        group by owner_username
+        union
+        select req_username as username,sum(req_toll) as toll
+        from Toll
+        group by req_username) as a
+        group by username;
+    </select>
+
+    <select id="selectAggregateByToken" resultMap="token">
+        select Token.*,token_toll as total
+from
+(select token_id,sum(req_toll) as token_toll
+        from (
+            select req_id,sum(owner_toll)+sum(req_toll) as req_toll
+            from Toll
+            group by req_id
+            ) as a join TokenReq on a.req_id=TokenReq.req_id
+group by token_id) as b join Token on b.token_id=Token.token_id;
+
+    </select>
+
+
+    <insert id="insertToll" parameterType="com.webwork.recruitsystem.Model.Toll">
+        insert into Toll(req_id, owner_username, req_username, date, owner_toll, req_toll)
+        values (#{req_id},#{owner_username},#{req_username},#{date},#{owner_toll},#{req_toll})
+    </insert>
+
+</mapper>

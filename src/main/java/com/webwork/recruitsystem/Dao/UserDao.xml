@@ -35,6 +35,9 @@
     <update id="updateQuery" parameterType="com.webwork.recruitsystem.Model.User">
         update user set phone=#{phone},content=#{content},password=#{password},modify_time=#{modify_time} where username=#{username}
     </update>
+    <update id="updateLevel" parameterType="com.webwork.recruitsystem.Model.User">
+        update user set user_level=#{user_level} where username=#{username}
+    </update>
     <insert id="insertQuery" parameterType="com.webwork.recruitsystem.Model.User">
         insert into user (username,password,user_type,name,cardtype,cardnum,phone,user_level,content,address,register_time,age) values
         (#{username},#{password},#{user_type},#{name},#{cardtype},#{cardnum},#{phone},#{user_level},#{content},#{address},#{register_time},#{age})

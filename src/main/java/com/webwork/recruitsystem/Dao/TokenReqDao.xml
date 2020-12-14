@@ -21,6 +21,12 @@
         order by state
     </select>
 
+    <select id="AllReqNoLimit" resultMap="TokenReq">
+        select *
+        from tokenreq
+        order by state
+    </select>
+
     <select id="AllTokenReq" parameterType="java.lang.String" resultMap="TokenReq">
         select *
         from tokenreq
